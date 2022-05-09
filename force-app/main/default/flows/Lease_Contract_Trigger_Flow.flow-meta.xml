@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Manager_Approval</name>
+        <label>Manager Approval</label>
+        <locationX>842</locationX>
+        <locationY>695</locationY>
+        <actionName>submit</actionName>
+        <actionType>submit</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>processDefinitionNameOrId</name>
+            <value>
+                <stringValue>Lease_Contract_Approval</stringValue>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>objectId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>comment</name>
+            <value>
+                <stringValue>Kindly approved the record.</stringValue>
+            </value>
+        </inputParameters>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </actionCalls>
+    <actionCalls>
+        <name>Send_Booking_Confirmation</name>
+        <label>Send Booking Confirmation</label>
+        <locationX>578</locationX>
+        <locationY>575</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <elementReference>emailBodyOnboarding</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>$Record.Tenant_Name__r.Email__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderAddress</name>
+            <value>
+                <elementReference>$Record.CreatedBy.Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <elementReference>emailSubject</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <actionCalls>
+        <name>SendCheckInEmail</name>
+        <label>SendCheckInEmail</label>
+        <locationX>50</locationX>
+        <locationY>575</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <connector>
+            <targetReference>increaseBookedRooms</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <elementReference>sendCheckInMail</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>$Record.Tenant_Name__r.Email__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderAddress</name>
+            <value>
+                <elementReference>$Record.CreatedBy.Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <elementReference>emailSubject</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <actionCalls>
+        <name>sendFirstEmail</name>
+        <label>sendFirstEmail</label>
+        <locationX>842</locationX>
+        <locationY>575</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <connector>
+            <targetReference>Manager_Approval</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <elementReference>emailBodyNew</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>$Record.Tenant_Name__r.Email__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderAddress</name>
+            <value>
+                <elementReference>$Record.CreatedBy.Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <elementReference>emailSubject</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <actionCalls>
+        <name>sendGoodByeMail</name>
+        <label>sendGoodByeMail</label>
+        <locationX>314</locationX>
+        <locationY>575</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <connector>
+            <targetReference>decreaseBookedRooms</targetReference>
+        </connector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <elementReference>emailBodyCheckout</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>$Record.Tenant_Name__r.Email__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderAddress</name>
+            <value>
+                <elementReference>$Record.CreatedBy.Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <elementReference>emailSubject</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <actionCalls>
+        <name>sendProcessingEmail</name>
+        <label>sendProcessingEmail</label>
+        <locationX>1106</locationX>
+        <locationY>575</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <elementReference>emailBodyProcessing</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>$Record.Tenant_Name__r.Email__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderAddress</name>
+            <value>
+                <elementReference>$Record.CreatedBy.Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <elementReference>emailSubject</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <apiVersion>54.0</apiVersion>
+    <decisions>
+        <name>Check_Status</name>
+        <label>Check Status</label>
+        <locationX>710</locationX>
+        <locationY>455</locationY>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Check_In</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Check In</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>SendCheckInEmail</targetReference>
+            </connector>
+            <label>Check In</label>
+        </rules>
+        <rules>
+            <name>Check_Out</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Check Out</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>sendGoodByeMail</targetReference>
+            </connector>
+            <label>Check Out</label>
+        </rules>
+        <rules>
+            <name>OnBoarded</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>OnBoarded</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Send_Booking_Confirmation</targetReference>
+            </connector>
+            <label>OnBoarded</label>
+        </rules>
+        <rules>
+            <name>New</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>New</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>sendFirstEmail</targetReference>
+            </connector>
+            <label>New</label>
+        </rules>
+        <rules>
+            <name>Processing</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Processing</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>sendProcessingEmail</targetReference>
+            </connector>
+            <label>Processing</label>
+        </rules>
+    </decisions>
+    <formulas>
+        <name>decreseBookedRoom</name>
+        <dataType>Number</dataType>
+        <expression>{!getFlatRecord.Rooms_Booked__c} - 1</expression>
+        <scale>0</scale>
+    </formulas>
+    <formulas>
+        <name>increaseBookedRoom</name>
+        <dataType>Number</dataType>
+        <expression>{!getFlatRecord.Rooms_Booked__c} + 1</expression>
+        <scale>0</scale>
+    </formulas>
+    <interviewLabel>Lea {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Lease Contract Trigger Flow</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>getFlatRecord</name>
+        <label>getFlatRecord</label>
+        <locationX>710</locationX>
+        <locationY>335</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Status</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Flat__r.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Flat__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>decreaseBookedRooms</name>
+        <label>decreaseBookedRooms</label>
+        <locationX>314</locationX>
+        <locationY>695</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Flat__r.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Rooms_Booked__c</field>
+            <value>
+                <elementReference>decreseBookedRoom</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Flat__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>increaseBookedRooms</name>
+        <label>increaseBookedRooms</label>
+        <locationX>50</locationX>
+        <locationY>695</locationY>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Flat__r.Id</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Rooms_Booked__c</field>
+            <value>
+                <elementReference>increaseBookedRoom</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Flat__c</object>
+    </recordUpdates>
+    <start>
+        <locationX>584</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>getFlatRecord</targetReference>
+        </connector>
+        <object>Lease_Contract__c</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <textTemplates>
+        <name>emailBodyCheckout</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Hi {!$Record.Tenant_Name__r.Name},
+
+We hope you enjoyed your stay. 
+
+Thank You,
+{!$Record.CreatedBy.Name}</text>
+    </textTemplates>
+    <textTemplates>
+        <name>emailBodyNew</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Hi {!$Record.Tenant_Name__r.Name},
+
+Your Lease Contract number is created. Your Lease Contract number is #{!$Record.Name}.
+We will update you once your booking is confirmed.
+
+Thanks,
+{!$Record.CreatedBy.Name}</text>
+    </textTemplates>
+    <textTemplates>
+        <name>emailBodyOnboarding</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Hi {!$Record.Tenant_Name__r.Name},
+
+Your Booking is Confirmed. Below are your details.
+Contract Number: {!$Record.Name}
+Building Name: {!$Record.Building__r.Name}
+Flat Name: {!$Record.Flat__r.Name}
+Room Number: {!$Record.Room_Number__c}
+Status: {!$Record.Status__c}
+CheckIn Date: {!$Record.Start_Date__c}
+CheckOut Date: {!$Record.End_Date__c}
+
+Thank You,
+{!$Record.CreatedBy.Name}</text>
+    </textTemplates>
+    <textTemplates>
+        <name>emailBodyProcessing</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Hi {!$Record.Tenant_Name__r.Name},
+
+Thanks for being with us. Your booking w.r.t #{!$Record.Name} is still under process.
+
+Thanks,
+{!$Record.CreatedBy.Name}</text>
+    </textTemplates>
+    <textTemplates>
+        <name>emailSubject</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Update on your Booking Contract Number- #{!$Record.Name}</text>
+    </textTemplates>
+    <textTemplates>
+        <name>sendCheckInMail</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>Hi {!$Record.Tenant_Name__r.Name},
+
+You have successfully checked into {!$Record.Building__r.Name}, {!$Record.Flat__r.Name}, Room Number - #{!$Record.Room_Number__c}.
+Please reachout to Flat Owner - {!$Record.Flat__r.Flat_Owner_Name__c}, Contact - {!$Record.Flat__r.Flat_Owner_Phone__c}, if you face any issue.
+
+Thank You,
+{!$Record.CreatedBy.Name}</text>
+    </textTemplates>
+</Flow>

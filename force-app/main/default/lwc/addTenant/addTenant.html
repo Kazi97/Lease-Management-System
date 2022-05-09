@@ -1,0 +1,38 @@
+<template>
+    <lightning-card title="Add Tenant">
+        <div class="slds-var-p-around_small">
+            <p>
+                <lightning-input placeholder="Tenant Name" data-id="tenant_name" onchange={tenantDetailHandler}
+                    required>
+                </lightning-input>
+            </p>
+            <p>
+                <lightning-input type="phone" placeholder="Tenant Phone Number" data-id="tenant_phone_number"
+                    onchange={tenantDetailHandler} required>
+                </lightning-input>
+            </p>
+            <p>
+                <lightning-input type="email" placeholder="Tenant Email" data-id="tenant_email"
+                    onchange={tenantDetailHandler}>
+                </lightning-input>
+            </p>
+            <p>
+                <lightning-input type="date" placeholder="Date of Birth" data-id="tenant_dob"
+                    onchange={tenantDetailHandler} required>
+                </lightning-input>
+            </p>
+            <p>
+                <lightning-combobox placeholder="Govt. Document Type" options={govtDocPicklist} data-id="tenant_gov_doc_type"
+                    onchange={tenantDetailHandler} required=""></lightning-combobox>
+            </p>
+            <p>
+                <lightning-input type="text" placeholder="Govt. Id Proof Number" data-id="tenant_govt_id_proof"
+                    onchange={tenantDetailHandler} required>
+                </lightning-input>
+            </p></br>
+            <p>
+                <lightning-button label="Add Tenant" variant="success" onclick={addTenantDetailHandler}></lightning-button>
+            </p>
+        </div>
+    </lightning-card>
+</template>

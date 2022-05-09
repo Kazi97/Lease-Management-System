@@ -1,0 +1,95 @@
+<template>
+    <div class="slds-grid slds-wrap">
+        <template if:false={isBuilding}>
+            <div class="slds-col slds-size_1-of-2 slds-p-around_small">
+                <p>
+                    <lightning-input type="search" placeholder="Enter building name" onkeypress={handleSearch} required>
+                    </lightning-input>
+                </p>
+                <ul>
+                    <template for:each={buildingList} for:item="building">
+                        <li key={building.Id}>
+                            <a data-id={building.Id} onclick={setBuildingId}>{building.Name} -
+                                {building.Contact_Name__c}</a>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+        </template>
+        <template if:true={isBuilding}>
+            <div class="slds-col slds-size_1-of-2 slds-p-around_small">
+                <div class="slds-box">
+                    <p>Building Number : {building.building_number}</p>
+                    <p>Building Name: {building.name}</p>
+                    <p>City: {building.city}</p>
+                    <p>State: {building.state}</p>
+                    <p>Pincode: {building.pincode}</p>
+                    <p>Contact Person: {building.contact_person}</p>
+                    <p>Contact Number: {building.phone}</p></br>
+                    <p>
+                        <lightning-button label="Change Building" variant="error" onclick={buildingChangeHandler}>
+                        </lightning-button>
+                    </p>
+                </div>
+                <p>
+                    <lightning-input placeholder="Flat Name" data-id="flat_name" onchange={flatDetailsHandler} required>
+                    </lightning-input>
+                </p>
+                <p>
+                    <lightning-input placeholder="Address Line 1" data-id="address1" onchange={flatDetailsHandler}
+                        required>
+                    </lightning-input>
+                </p>
+                <p>
+                    <lightning-input placeholder="Address Line 2" data-id="address2" onchange={flatDetailsHandler}>
+                    </lightning-input>
+                </p>
+                <p>
+                    <lightning-input placeholder="City" data-id="city" onchange={flatDetailsHandler} required>
+                    </lightning-input>
+                </p>
+                <p>
+                    <lightning-input type="number" placeholder="Pincode" data-id="pincode" onchange={flatDetailsHandler}
+                        required>
+                    </lightning-input>
+                </p>
+                <p>
+                    <lightning-input placeholder="State" data-id="state" onchange={flatDetailsHandler} required>
+                    </lightning-input>
+                </p>
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-p-around_small">
+                <p>
+                    <lightning-input placeholder="Number of Stories" data-id="no_of_stories"
+                        onchange={flatDetailsHandler} required>
+                    </lightning-input>
+                </p>
+                <p>
+                    <lightning-input placeholder="Rooms per Floor" data-id="rooms_per_floor"
+                        onchange={flatDetailsHandler} required>
+                    </lightning-input>
+                </p>
+                <p>
+                    <lightning-input placeholder="Flat Owner Name" data-id="flat_owner_name"
+                        onchange={flatDetailsHandler} required>
+                    </lightning-input>
+                </p>
+                <p>
+                    <lightning-input type="tel" placeholder="Flat Owner Phone" data-id="flat_owner_phone"
+                        onchange={flatDetailsHandler} required>
+                    </lightning-input>
+                </p>
+                <p>
+                    <lightning-input type="email" placeholder="Flat Owner Email" data-id="flat_owner_email"
+                        onchange={flatDetailsHandler}>
+                    </lightning-input>
+                </p>
+            </br>
+                <p>
+                    <lightning-button label="Add Flat" variant="success" onclick={addFlatHandler}
+                        class="slds-align_absolute-center"></lightning-button>
+                </p>
+            </div>
+        </template>
+    </div>
+</template>

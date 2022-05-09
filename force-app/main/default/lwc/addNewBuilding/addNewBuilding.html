@@ -1,0 +1,46 @@
+<template>
+    <div class="slds-grid slds-wrap">
+        <div class="slds-col slds-size_1-of-2 slds-p-around_small">
+            <p>
+                <lightning-input placeholder="Building Name" data-id="building_name" onchange={buildingDetailsHandler} required>
+                </lightning-input>
+            </p>
+            <p>
+                <lightning-input placeholder="Address Line 1" data-id="address1" onchange={buildingDetailsHandler} required>
+                </lightning-input>
+            </p>
+            <p>
+                <lightning-input placeholder="Address Line 2" data-id="address2" onchange={buildingDetailsHandler}>
+                </lightning-input>
+            </p>
+            <p>
+                <lightning-input type="number" placeholder="Pincode" data-id="pincode" onchange={buildingDetailsHandler} required>
+                </lightning-input>
+            </p>
+            <p>
+                <lightning-input placeholder="City" data-id="city" onchange={buildingDetailsHandler} required>
+                </lightning-input>
+            </p>
+            <p>
+                <lightning-input placeholder="State" data-id="state" onchange={buildingDetailsHandler} required>
+                </lightning-input>
+            </p>
+        </div>
+        <div class="slds-col slds-size_1-of-2 slds-p-around_small">
+            <p>
+                <lightning-input placeholder="Contact Name" data-id="contactName" onchange={buildingDetailsHandler} required>
+                </lightning-input>
+            </p>
+            <p>
+                <lightning-input type="tel" placeholder="Contact Phone Number" data-id="contatPhoneNumber" onchange={buildingDetailsHandler} required></lightning-input>
+            </p>
+            <p>
+                <lightning-input type="email" placeholder="Contact Email" data-id="contatEmail" onchange={buildingDetailsHandler}></lightning-input>
+            </p>
+        </div>
+    </div>
+    </br>
+    <p>
+        <lightning-button label="Add Building" variant="success" onclick={addBuildingHandler} class="slds-align_absolute-center"></lightning-button>
+    </p>
+</template>

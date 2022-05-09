@@ -1,0 +1,21 @@
+<template>
+    <lightning-card title="Add House">
+        <div class="slds-p-around_medium">
+            <div class="slds-text-heading_large">
+                <p>
+                    <lightning-radio-group name="radioGroup" options={options} value={value} type="radio" onchange={propertyTypeHandler}>
+                    </lightning-radio-group>
+                </p>
+            </div>
+            <div>
+                <template if:true={building}>
+                    <c-add-new-building></c-add-new-building>
+                </template>
+                <template if:true={flat}>
+                    <c-add-new-flat></c-add-new-flat>
+                </template>
+                
+            </div>
+        </div>
+    </lightning-card>
+</template>
