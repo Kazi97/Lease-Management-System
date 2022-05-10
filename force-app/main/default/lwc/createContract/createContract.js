@@ -1,6 +1,11 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, wire } from 'lwc';
+import { getPicklistValues } from 'lightning/uiObjectInfoApi'
+import { getObjectInfo } from 'lightning/uiObjectInfoApi'
+import LEASE_CONTRACT from '@salesforce/schema/Lease_Contract__c'
+import STATUS from '@salesforce/schema/Lease_Contract__c.Status__c'
 import getBuildings from '@salesforce/apex/BuildingHandler.getBuildings';
-import getFlatsByBuildingId from '@salesforce/apex/BuildingHandler.getFlatsByBuildingId';
+import getFlatsByBuildingId from '@salesforce/apex/BuildingHandler.getFlatsByBuildingIdAndFlatName';
+import getTenants from '@salesforce/apex/BuildingHandler.getTenants';
 
 export default class CreateContract extends LightningElement {
 
@@ -21,6 +26,31 @@ export default class CreateContract extends LightningElement {
     step4 = false
     step5 = false
 
+
+    @wire(getObjectInfo, {
+        objectApiName : LEASE_CONTRACT
+    })leaseContractMetadata
+
+    @wire(getPicklistValues, {
+        recordTypeId : '$leaseContractMetadata.data.defaultRecordTypeId',
+        fieldApiName : STATUS
+    })statusPicklist
+
+    @wire(getBuildings, {
+        buildingName : ''
+    })wiredBuildingList({data,error}){
+        if(data){
+
+        }else if(error){
+
+        }
+    }
+
+    @wire(getTenants, {
+        name : ''
+    })wiredTenantList({data,error}){
+        
+    }
 
     nextStateChangeHandler() {
         if (this.step == 1) {

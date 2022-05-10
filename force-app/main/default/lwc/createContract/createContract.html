@@ -32,39 +32,37 @@
 
                 </br></br>
 
-                <div class="slds-box">
+                <div class="slds-box" style="max-height: 260px; overflow-y: scroll">
                     <template if:true={step1}>
-                        <h1>Building Name:</h1></br>
+                        Building Name:
                         <lightning-input type="search" data-id="building_name" onchange={contractDetailHandler}
                             required></lightning-input>
                     </template>
                     <template if:true={step2}>
-                        <h1>Flat Name:</h1></br>
+                        Flat Name:
                         <lightning-input type="search" data-id="flat_name" onchange={contractDetailHandler} required>
                         </lightning-input>
                     </template>
                     <template if:true={step3}>
-                        <h1>Tenant Name:</h1></br>
+                        Tenant Name:
                         <lightning-input type="search" data-id="tenant_name" onchange={contractDetailHandler} required>
                         </lightning-input>
                     </template>
                     <template if:true={step4}>
-                        <div class="slds-col slds-wrap">
-                            <h1>Enter additional details:</h1></br>
-                            <div class="slds-col slds-size_1-of-2">
-                                <lightning-input type="text" value={buildingName} disabled></lightning-input>
-                                <lightning-input type="text" value={flatName} disabled></lightning-input>
-                                <lightning-input type="text" value={tenantName} disabled></lightning-input>
+                        Enter additional details:
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-size_1-of-2 slds-var-p-around_small">
+                                <lightning-input type="text" value="tenantName" disabled></lightning-input>
+                                <lightning-input type="text" value="buildingName" disabled></lightning-input>
+                                <lightning-input type="text" value="flatName" disabled></lightning-input>                                
                                 <lightning-input type="number" placeholder="Floor" onchange={contractDetailHandler}
                                     required></lightning-input>
                                 <lightning-input type="number" placeholder="Room" onchange={contractDetailHandler}
                                     required></lightning-input>
-                                <lightning-input type="text" placeholder="Description" onchange={contractDetailHandler}
-                                    required></lightning-input>
                             </div>
-                            <div class="slds-col slds-size_1-of-2">
-                                <lightning-combobox name="progress" label="Status" value={value}
-                                    placeholder="Select Progress" options={options} onchange={handleChange}>
+                            <div class="slds-col slds-size_1-of-2 slds-var-p-around_small">
+                                <lightning-combobox value={value}
+                                    placeholder="Status" options={statusPicklist.data.values} onchange={contractDetailHandler}>
                                 </lightning-combobox>
                                 <lightning-input type="date" placeholder="Start Date" onchange={contractDetailHandler}
                                     required></lightning-input>
@@ -74,7 +72,21 @@
                         </div>
                     </template>
                     <template if:true={step5}>
-                        step5
+                        Check the below details before submitting.
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-size_1-of-2 slds-var-p-around_small">
+                                <lightning-input type="text" value="tenantName" disabled></lightning-input>
+                                <lightning-input type="text" value="buildingName" disabled></lightning-input>
+                                <lightning-input type="text" value="flatName" disabled></lightning-input>                                
+                                <lightning-input type="number" value="floorNumber" disabled></lightning-input>
+                                <lightning-input type="number" value="roomNumber" disabled></lightning-input>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2 slds-var-p-around_small">
+                                <lightning-input type="text" value="status" disabled></lightning-input>
+                                <lightning-input type="date" value="startDate" disabled></lightning-input>
+                                <lightning-input type="date" value="endDate" disabled></lightning-input>
+                            </div>
+                        </div>
                     </template>
                 </div>
 

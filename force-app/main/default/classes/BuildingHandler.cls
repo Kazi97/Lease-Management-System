@@ -62,21 +62,36 @@ public with sharing class BuildingHandler {
 
         if(String.isBlank(buildingName)){
             return [SELECT Id,Name,Building_Number__c,Address_Line_1__c,Address_Line_2__c,Pincode__c,City__c,State__c,Contact_Name__c,Contact_Phone_Number__c,Contact_Email__c
-                    FROM Building__c LIMIT 10];
+                    FROM Building__c 
+                    ORDER BY Name
+                    LIMIT 10];
         }else{
             buildingName = '%'+buildingName+'%';
             return [SELECT Id,Name,Building_Number__c,Address_Line_1__c,Address_Line_2__c,Pincode__c,City__c,State__c,Contact_Name__c,Contact_Phone_Number__c,Contact_Email__c
                     FROM Building__c
-                    WHERE Name LIKE :buildingName 
+                    WHERE Name LIKE :buildingName
+                    ORDER BY Name 
                     LIMIT 10];
         }
    }
 
    @AuraEnabled(cacheable=true)
-   public static List<Flat__c> getFlatsByBuildingId(String buildingId){
-       if(!String.isBlank(buildingId)){
-            return [SELECT Id,Name,Number_of_Stories__c,Rooms_per_Floor__c FROM Flat__c WHERE Building__c = :buildingId];
-       }else{
+   public static List<Flat__c> getFlatsByBuildingIdAndFlatName(String buildingId, String flatName){
+       if(!String.isBlank(buildingId) && (String.isBlank(flatName) || flatName == NULL || flatName.length() <= 0)){
+            return [SELECT Id,Name,Number_of_Stories__c,Rooms_per_Floor__c 
+                    FROM Flat__c 
+                    WHERE Building__c = :buildingId
+                    ORDER BY Name
+                    LIMIT 10];
+       }else if(!String.isBlank(buildingId) && !String.isBlank(flatName)){
+           flatName = '%'+flatName+'%';
+           return [SELECT Id,Name,Number_of_Stories__c,Rooms_per_Floor__c 
+                    FROM Flat__c 
+                    WHERE Building__c = :buildingId
+                    AND Name LIKE :flatName
+                    ORDER BY Name
+                    LIMIT 10];
+       }else {
            return null;
        }
    }
@@ -85,9 +100,16 @@ public with sharing class BuildingHandler {
    public static List<Tenant__c> getTenants(String name){
        if (!String.isBlank(name)) {
            name = '%'+name+'%';
-           return [SELECT Id,Name FROM Tenant__c WHERE Name LIKE :name];
+           return [SELECT Id,Name 
+                    FROM Tenant__c 
+                    WHERE Name LIKE :name
+                    ORDER BY Name
+                    LIMIT 10];
        }else{
-           return null;
+           return [SELECT Id,Name 
+                    FROM Tenant__c
+                    ORDER BY Name
+                    LIMIT 10];
        }
    }
 
