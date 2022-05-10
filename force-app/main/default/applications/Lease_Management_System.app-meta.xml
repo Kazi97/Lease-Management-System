@@ -14,8 +14,8 @@
     <tabs>Flat__c</tabs>
     <tabs>Lease_Contract__c</tabs>
     <tabs>Tenant__c</tabs>
-    <tabs>LMS_App</tabs>
-    <tabs>Add_Tenant</tabs>
+    <tabs>Add_Building_Tenant</tabs>
+    <tabs>Contract</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Lease_Management_System_UtilityBar</utilityBar>
 </CustomApplication>

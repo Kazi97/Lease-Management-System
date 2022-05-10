@@ -1,20 +1,95 @@
 <template>
-    <div class="slds-var-p-around_small">
-        <p>
-            <lightning-input type="search" placeholder="Building Name" data-id="building_name"
-                onkeypress={contractDatahandler} required></lightning-input>
-        </p>
-        <ul>
-            <template for:each={buildingList} for:item="building">
-                <li key={building.Id}>
-                    <a data-id={building.Id} onclick={setBuildingId}>{building.Name} -
-                        {building.Contact_Name__c}</a>
-                </li>
-            </template>
-        </ul>
-        <template if:true={isFlat}>
-            <lightning-radio-group label="Choose your flat" options={flatOptions} onchange={contractDatahandler}
-                required></lightning-radio-group>
-        </template>
-    </div>
+    <lightning-card title="Contract Creation">
+        <div class="slds-grid slds-wrap slds-var-p-around_xx-large">
+            <div class="slds-col slds-size_1-of-3 slds-var-p-left_xx-large slds-text-heading_small">
+                <template if:true={step1detail}>
+                    Select the building whose flat you want to book. Click on 'Next' to add details in every steps.
+                </template>
+                <template if:true={step2detail}>
+                    Select the appropriate flat.
+                </template>
+                <template if:true={step3detail}>
+                    Add the tenant details.
+                </template>
+                <template if:true={step4detail}>
+                    Add other details like story, room, start date, end date etc.
+                </template>
+                <template if:true={step5detail}>
+                    Check the details before creating the contract. Click on 'Finish' to create the contract.
+                </template>
+            </div>
+
+            <div class="slds-col slds-size_2-of-3 slds-var-p-right_xx-large slds-text-heading_small">
+                <div class="slds-var-p-around_small">
+                    <lightning-progress-indicator current-step={current_step} type="base" variant="base">
+                        <lightning-progress-step label="Add Building" value="1"></lightning-progress-step>
+                        <lightning-progress-step label="Add Flat" value="2"></lightning-progress-step>
+                        <lightning-progress-step label="Add Tenant" value="3"></lightning-progress-step>
+                        <lightning-progress-step label="Add Contract Details" value="4"></lightning-progress-step>
+                        <lightning-progress-step label="Finish" value="5"></lightning-progress-step>
+                    </lightning-progress-indicator>
+                </div>
+
+                </br></br>
+
+                <div class="slds-box">
+                    <template if:true={step1}>
+                        <h1>Building Name:</h1></br>
+                        <lightning-input type="search" data-id="building_name" onchange={contractDetailHandler}
+                            required></lightning-input>
+                    </template>
+                    <template if:true={step2}>
+                        <h1>Flat Name:</h1></br>
+                        <lightning-input type="search" data-id="flat_name" onchange={contractDetailHandler} required>
+                        </lightning-input>
+                    </template>
+                    <template if:true={step3}>
+                        <h1>Tenant Name:</h1></br>
+                        <lightning-input type="search" data-id="tenant_name" onchange={contractDetailHandler} required>
+                        </lightning-input>
+                    </template>
+                    <template if:true={step4}>
+                        <div class="slds-col slds-wrap">
+                            <h1>Enter additional details:</h1></br>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-input type="text" value={buildingName} disabled></lightning-input>
+                                <lightning-input type="text" value={flatName} disabled></lightning-input>
+                                <lightning-input type="text" value={tenantName} disabled></lightning-input>
+                                <lightning-input type="number" placeholder="Floor" onchange={contractDetailHandler}
+                                    required></lightning-input>
+                                <lightning-input type="number" placeholder="Room" onchange={contractDetailHandler}
+                                    required></lightning-input>
+                                <lightning-input type="text" placeholder="Description" onchange={contractDetailHandler}
+                                    required></lightning-input>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <lightning-combobox name="progress" label="Status" value={value}
+                                    placeholder="Select Progress" options={options} onchange={handleChange}>
+                                </lightning-combobox>
+                                <lightning-input type="date" placeholder="Start Date" onchange={contractDetailHandler}
+                                    required></lightning-input>
+                                <lightning-input type="date" placeholder="End Date" onchange={contractDetailHandler}
+                                    required></lightning-input>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:true={step5}>
+                        step5
+                    </template>
+                </div>
+
+                </br></br>
+
+                <div>
+                    <lightning-button variant="brand" label={bttnLabel} class="slds-float_right"
+                        onclick={nextStateChangeHandler}></lightning-button>
+                    <template if:true={enablePrevButton}>
+                        <lightning-button variant="neutral" label="Previous"
+                            class="slds-float_right slds-var-m-right_small" onclick={previousStateChangeHandler}>
+                        </lightning-button>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
 </template>

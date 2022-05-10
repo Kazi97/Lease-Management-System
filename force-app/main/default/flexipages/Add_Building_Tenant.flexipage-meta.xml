@@ -10,7 +10,7 @@
         <name>main</name>
         <type>Region</type>
     </flexiPageRegions>
-    <masterLabel>LMS App</masterLabel>
+    <masterLabel>Add Building/Tenant</masterLabel>
     <template>
         <name>flexipage:defaultAppHomeTemplate</name>
     </template>

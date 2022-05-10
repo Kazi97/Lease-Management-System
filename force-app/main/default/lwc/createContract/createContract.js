@@ -3,79 +3,131 @@ import getBuildings from '@salesforce/apex/BuildingHandler.getBuildings';
 import getFlatsByBuildingId from '@salesforce/apex/BuildingHandler.getFlatsByBuildingId';
 
 export default class CreateContract extends LightningElement {
-    contractDetails = {
-        building_id: '',
-        flat_id: '',
-        tenant_name: ''
-    }
-    isFlat = false
-    buildingList
-    flatList
-    flatOptions = {}
-    selectedFlatDetails
+
+    enablePrevButton
+    bttnLabel = 'Next'
+    step = 1
+    current_step = 1
+
+    step1detail = true
+    step2detail = false
+    step3detail = false
+    step4detail = false
+    step5detail = false
+
+    step1 = true
+    step2 = false
+    step3 = false
+    step4 = false
+    step5 = false
 
 
-    contractDatahandler(event) {
-        let dataId = event.target.dataset.id
-        let data
-        if (event.keyCode === 13) {
-            data = event.target.value
-            if (dataId === 'building_name') {
-                this.getBuildingDetails(data)
+    nextStateChangeHandler() {
+        if (this.step == 1) {
+            this.step++
+            this.enablePrevButton = true
+        }
+        else if (this.step > 1 && this.step <= 4) {
+            if (this.step == 4) {
+                this.step++
+                this.bttnLabel = 'Finish'
             }
-        } else {
-            data = event.target.value
-            if (dataId === 'selected_flat') {
-                console.log('Flat Id ---> ', data)
-                this.searchSelectedFlatDetails(data)
+            else {
+                this.step++
+                this.bttnLabel = 'Next'
             }
         }
+
+        this.current_step = this.step.toString()
+        console.log('next -> ', this.current_step)
+
+        this.setSteps(this.step)
     }
 
-    getBuildingDetails(building) {
-        getBuildings({
-            buildingName: building
-        }).then(resp => {
-            this.buildingList = resp
-        }).catch(err => {
-            console.log('error ---> ', err)
-        })
+    previousStateChangeHandler() {
+        if (this.step == 2) {
+            this.step--
+            this.enablePrevButton = false
+        }
+
+        if (this.step >= 2) {
+            this.step--
+            this.bttnLabel = 'Next'
+        }
+
+        this.current_step = this.step.toString()
+        console.log('prev -> ', this.current_step)
+
+        this.setSteps(this.step)
     }
 
-    setBuildingId(event) {
-        this.contractDetails.building_id = event.target.dataset.id
-        console.log('Building Id --> ', this.contractDetails.building_id)
-        this.getFlatDetails(this.contractDetails.building_id)
-    }
+    setSteps(val) {
+        switch (val) {
+            case 1: {
+                this.step1detail = true
+                this.step2detail = false
+                this.step3detail = false
+                this.step4detail = false
+                this.step5detail = false
 
-    getFlatDetails(buildingId) {
-        getFlatsByBuildingId({
-            buildingId: buildingId
-        }).then(resp => {
-            console.log('Flats ---> ', resp)
-            this.flatList = resp
-            this.createFlatOptions(resp)
-        }).catch(err => {
-            console.log(err)
-        })
-    }
+                this.step1 = true
+                this.step2 = false
+                this.step3 = false
+                this.step4 = false
+                this.step5 = false
+            } break
+            case 2: {
+                this.step1detail = false
+                this.step2detail = true
+                this.step3detail = false
+                this.step4detail = false
+                this.step5detail = false
 
-    createFlatOptions(data) {       
-        data.forEach(e => {
-            this.flatOptions.label = e.Name
-            this.flatOptions.value = e.Id
-        })
-        this.isFlat = true
-    }
+                this.step1 = false
+                this.step2 = true
+                this.step3 = false
+                this.step4 = false
+                this.step5 = false
+            } break
+            case 3: {
+                this.step1detail = false
+                this.step2detail = false
+                this.step3detail = true
+                this.step4detail = false
+                this.step5detail = false
 
-    searchSelectedFlatDetails(data){
-        this.flatList.every(e => {
-            if(e.Id === data){
-                this.selectedFlatDetails = e
-                return false
+                this.step1 = false
+                this.step2 = false
+                this.step3 = true
+                this.step4 = false
+                this.step5 = false
+            } break
+            case 4: {
+                this.step1detail = false
+                this.step2detail = false
+                this.step3detail = false
+                this.step4detail = true
+                this.step5detail = false
+
+                this.step1 = false
+                this.step2 = false
+                this.step3 = false
+                this.step4 = true
+                this.step5 = false
+            } break
+            case 5: {
+                this.step1detail = false
+                this.step2detail = false
+                this.step3detail = false
+                this.step4detail = false
+                this.step5detail = true
+
+                this.step1 = false
+                this.step2 = false
+                this.step3 = false
+                this.step4 = false
+                this.step5 = true
             }
-            return true
-        })
-        console.log('Selected Flat ---> ',this.selectedFlatDetails)
+        }
     }
 }
