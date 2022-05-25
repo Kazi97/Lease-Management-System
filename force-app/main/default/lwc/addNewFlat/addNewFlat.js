@@ -103,11 +103,11 @@ export default class AddNewFlat extends LightningElement {
         }
     }
 
-    addFlatHandler(){
+    addFlatHandler() {
         this.flat.buildingId = this.building.id
-        console.log('Flat Details => ',this.flat)
+        console.log('Flat Details => ', this.flat)
         createFlat({
-            wrapperFlat : JSON.stringify(this.flat)
+            wrapperFlat: JSON.stringify(this.flat)
         }).then(() => {
             this.dispatchEvent(new ShowToastEvent({
                 title: this.flat.name,

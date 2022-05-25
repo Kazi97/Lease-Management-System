@@ -4,10 +4,22 @@ import { getObjectInfo } from 'lightning/uiObjectInfoApi'
 import LEASE_CONTRACT from '@salesforce/schema/Lease_Contract__c'
 import STATUS from '@salesforce/schema/Lease_Contract__c.Status__c'
 import getBuildings from '@salesforce/apex/BuildingHandler.getBuildings';
-import getFlatsByBuildingId from '@salesforce/apex/BuildingHandler.getFlatsByBuildingIdAndFlatName';
+import getFlatsByBuildingIdAndFlatName from '@salesforce/apex/BuildingHandler.getFlatsByBuildingIdAndFlatName';
 import getTenants from '@salesforce/apex/BuildingHandler.getTenants';
 
 export default class CreateContract extends LightningElement {
+
+    contract = {
+        tenant: '',
+        building: '',
+        flat: '',
+        floor: '',
+        room: '',
+        description: '',
+        status: '',
+        startdate: '',
+        enddate: ''
+    }
 
     enablePrevButton
     bttnLabel = 'Next'
@@ -36,20 +48,70 @@ export default class CreateContract extends LightningElement {
         fieldApiName : STATUS
     })statusPicklist
 
-    @wire(getBuildings, {
-        buildingName : ''
-    })wiredBuildingList({data,error}){
-        if(data){
-
-        }else if(error){
-
+    flatList
+    tenantList
+    contractDetailHandler(event) {
+        let dataId = event.target.dataset.id
+        let detail = event.target.value
+        switch (dataId) {
+            case 'building_name': this.searchBuilding(detail)
+            break;
+            case 'flat_name': this.searchFlat(detail)
+            break;
+            case 'tenant_name': this.tenantList = this.searchTenant(detail)
+            break;
         }
     }
 
-    @wire(getTenants, {
-        name : ''
-    })wiredTenantList({data,error}){
-        
+    buildingList
+    searchBuilding(val){
+        getBuildings({
+            buildingName : val
+        }).then(resp => {
+            this.buildingList =  resp
+            console.log('Building List => ',this.buildingList)
+        }).catch(err => {
+            console.log('err => ',err)
+            this.buildingList =  err            
+        })
+    }
+
+    buildingName = ''
+    selectedBuildingHandler(event){
+        let buildingId = event.target.dataset.id
+        this.buildingList.every(e => {
+            if(e.Id === buildingId){
+                this.buildingName = e.Name
+                return false
+            }
+            return true
+        })        
+        console.log('building Id => ',buildingId)
+        console.log('building name => ',this.buildingName)
+        let flatArray = this.getFlatsfromApex(buildingId)
+        console.log('flats => ',flatArray)
+    }
+
+    
+    async getFlatsfromApex(val){
+        console.log('Val =>',val)
+        let flats
+        await getFlatsByBuildingIdAndFlatName({
+            buildingId : val,
+            flatName : null
+        }).then(resp => {
+            flats = resp
+            console.log('Flats => ',flats)
+            return flats
+        }).catch(err => {  
+            console.log(err)
+        })
+        console.log('out Flats => ',flats)
+        return flats
+    }
+
+    searchTenant(val){
+
     }
 
     nextStateChangeHandler() {

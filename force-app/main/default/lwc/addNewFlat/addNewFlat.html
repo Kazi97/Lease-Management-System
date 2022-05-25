@@ -9,7 +9,7 @@
                 <ul>
                     <template for:each={buildingList} for:item="building">
                         <li key={building.Id}>
-                            <a data-id={building.Id} onclick={setBuildingId}>{building.Name} -
+                            <a data-id={building.Id} onclick={getBuildingDetail}>{building.Name} -
                                 {building.Contact_Name__c}</a>
                         </li>
                     </template>

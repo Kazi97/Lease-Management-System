@@ -113,6 +113,15 @@ public with sharing class BuildingHandler {
        }
    }
 
+   @AuraEnabled
+   public static String createContract(String wrapperContract){
+       String contractId = '';
+
+
+
+       return contractId;
+   }
+
     public class BuildingWrapper{
         @AuraEnabled
         public String name;
@@ -174,5 +183,26 @@ public with sharing class BuildingHandler {
         public String gov_doc;
         @AuraEnabled
         public String gov_id_number;
+    }
+
+    public class ContractWrapper{
+        @AuraEnabled
+        public String tenant;
+        @AuraEnabled	
+        public String building;
+        @AuraEnabled	
+        public String flat;	
+        @AuraEnabled
+        public String floor;
+        @AuraEnabled
+        public String room;	
+        @AuraEnabled
+        public String description;
+        @AuraEnabled
+        public String status;
+        @AuraEnabled
+        public String startdate;
+        @AuraEnabled
+        public String enddate;
     }
 }
