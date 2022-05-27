@@ -12,7 +12,16 @@
                     Add the tenant details.
                 </template>
                 <template if:true={step4detail}>
-                    Add other details like story, room, start date, end date etc.
+                    <p>Add other details like story, room, start date, end date etc.</p>
+                    <p>
+                        <lightning-button label="Click to See Available Rooms" variant="success" onclick={getavailableRoomHandler}></lightning-button>
+                    </p>
+                    <template if:true={isAvailableRooms}>
+                        <template for:each={availableRooms} for:item="room"></template>
+                            <p key={room.id}>
+                                Floor: {room.key} -- {room.value}
+                            </p>
+                    </template>
                 </template>
                 <template if:true={step5detail}>
                     Check the details before creating the contract. Click on 'Finish' to create the contract.
@@ -33,68 +42,114 @@
                 </br></br>
 
                 <div class="slds-box" style="max-height: 260px; overflow-y: scroll">
+
+                    <!-- Building Selection -->
                     <template if:true={step1}>
                         Building Name:
-                        <lightning-input type="search" data-id="building_name" placeholder={buildingName} onchange={contractDetailHandler}
+                        <template if:false={isBuildingSelected}>
+                            <lightning-input type="search" data-id="building_name" onchange={contractDetailHandler}
                             required></lightning-input>
-                            <div>
-                                <template for:each={buildingList} for:item="building">
-                                    <div key={building.Id}>
-                                        <a data-id={building.Id} onclick={selectedBuildingHandler}>{building.Name}</a>
-                                    </div>
-                                </template>
-                            </div>                        
+                            <template if:true={isBuildingListAvailable}>
+                                <div>
+                                    <template for:each={buildingList} for:item="building">
+                                        <div key={building.Id}>
+                                            <a data-id={building.Id} onclick={selectedBuildingHandler}>{building.Name}</a>
+                                        </div>
+                                    </template>
+                                </div> 
+                            </template>    
+                        </template>
+                        <template if:true={isBuildingSelected}>
+                            &nbsp;&nbsp;<a title="Click to change" onclick={changeBuildingHandler}>{contract.building_name}</a>
+                        </template>                                           
                     </template>
+
+                    <!-- Flat Selection -->
                     <template if:true={step2}>
                         Flat Name:
-                        <lightning-input type="search" data-id="flat_name" onchange={contractDetailHandler} required>
-                        </lightning-input>
+                        <template if:false={isFlatSelected}>
+                            <lightning-input type="search" data-id="flat_name" onchange={contractDetailHandler} required>
+                            </lightning-input>
+                            <template if:true={isFlatListAvailable}>
+                                <div>
+                                    <template for:each={flatList} for:item="flat">
+                                        <div key={flat.Id}>
+                                            <a data-id={flat.Id} onclick={selectedFlatHandler}>{flat.Name} - Empty Room(s):{flat.Rooms_Unbooked__c}</a>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </template>
+                        <template if:true={isFlatSelected}>
+                            &nbsp;&nbsp;<a title="Click to change" onclick={changeFlatHandler}>{contract.flat_name}</a>
+                        </template>
                     </template>
+
+                    <!-- Tenant Selection -->
                     <template if:true={step3}>
                         Tenant Name:
-                        <lightning-input type="search" data-id="tenant_name" onchange={contractDetailHandler} required>
-                        </lightning-input>
+                        <template if:false={isTenantSelected}>
+                            <lightning-input type="search" data-id="tenant_name" onchange={contractDetailHandler} required>
+                            </lightning-input>
+                            <template if:true={isTenantListAvailable}>
+                                <div>
+                                    <template for:each={tenantList} for:item="tenant">
+                                        <div key={tenant.Id}>
+                                            <a data-id={tenant.Id} onclick={selectedTenantHandler}>{tenant.Name} - Age:{tenant.Age__c} - Phone:{tenant.Phone_Number__c}</a>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </template>
+                        <template if:true={isTenantSelected}>
+                            &nbsp;&nbsp;<a title="Click to change" onclick={changeTenantHandler}>{contract.tenant_name}</a>
+                        </template>                        
                     </template>
+
+                    <!-- Entering additional details -->
                     <template if:true={step4}>
                         Enter additional details:
                         <div class="slds-grid slds-wrap">
                             <div class="slds-col slds-size_1-of-2 slds-var-p-around_small">
-                                <lightning-input type="text" value="tenantName" disabled></lightning-input>
-                                <lightning-input type="text" value="buildingName" disabled></lightning-input>
-                                <lightning-input type="text" value="flatName" disabled></lightning-input>
-                                <lightning-input type="number" placeholder="Floor" onchange={contractDetailHandler}
+                                <lightning-input type="text" value={contract.tenant_name} disabled></lightning-input>
+                                <lightning-input type="text" value={contract.building_name} disabled></lightning-input>
+                                <lightning-input type="text" value={contract.flat_name} disabled></lightning-input>
+                                <lightning-input type="number" data-id="floor" placeholder="Floor" onchange={contractDetailHandler}
                                     required></lightning-input>
-                                <lightning-input type="number" placeholder="Room" onchange={contractDetailHandler}
+                                <lightning-input type="number" data-id="room" placeholder="Room" onchange={contractDetailHandler}
                                     required></lightning-input>
                             </div>
                             <div class="slds-col slds-size_1-of-2 slds-var-p-around_small">
-                                <lightning-combobox value={value} placeholder="Status"
+                                <lightning-combobox data-id="status" value={value} placeholder="Status"
                                     options={statusPicklist.data.values} onchange={contractDetailHandler}>
                                 </lightning-combobox>
-                                <lightning-input type="date" placeholder="Start Date" onchange={contractDetailHandler}
+                                <lightning-input type="date" data-id="start_date" placeholder="Start Date" onchange={contractDetailHandler}
                                     required></lightning-input>
-                                <lightning-input type="date" placeholder="End Date" onchange={contractDetailHandler}
+                                <lightning-input type="date" data-id="end_date" placeholder="End Date" onchange={contractDetailHandler}
                                     required></lightning-input>
                             </div>
                         </div>
                     </template>
+
+                    <!-- Reviewing the entered details before submitting -->
                     <template if:true={step5}>
                         Check the below details before submitting.
                         <div class="slds-grid slds-wrap">
                             <div class="slds-col slds-size_1-of-2 slds-var-p-around_small">
-                                <lightning-input type="text" value="tenantName" disabled></lightning-input>
-                                <lightning-input type="text" value="buildingName" disabled></lightning-input>
-                                <lightning-input type="text" value="flatName" disabled></lightning-input>
-                                <lightning-input type="number" value="floorNumber" disabled></lightning-input>
-                                <lightning-input type="number" value="roomNumber" disabled></lightning-input>
+                                <lightning-input type="text" value={contract.tenant_name} disabled></lightning-input>
+                                <lightning-input type="text" value={contract.building_name} disabled></lightning-input>
+                                <lightning-input type="text" value={contract.flat_name} disabled></lightning-input>
+                                <lightning-input type="number" value={contract.floor} disabled></lightning-input>
+                                <lightning-input type="number" value={contract.room} disabled></lightning-input>
                             </div>
                             <div class="slds-col slds-size_1-of-2 slds-var-p-around_small">
-                                <lightning-input type="text" value="status" disabled></lightning-input>
-                                <lightning-input type="date" value="startDate" disabled></lightning-input>
-                                <lightning-input type="date" value="endDate" disabled></lightning-input>
+                                <lightning-input type="text" value={contract.status} disabled></lightning-input>
+                                <lightning-input type="date" value={contract.startdate} disabled></lightning-input>
+                                <lightning-input type="date" value={contract.enddate} disabled></lightning-input>
                             </div>
                         </div>
                     </template>
+
                 </div>
 
                 </br></br>

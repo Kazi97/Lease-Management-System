@@ -78,14 +78,14 @@ public with sharing class BuildingHandler {
    @AuraEnabled(cacheable=true)
    public static List<Flat__c> getFlatsByBuildingIdAndFlatName(String buildingId, String flatName){
        if(!String.isBlank(buildingId) && (String.isBlank(flatName) || flatName == NULL || flatName.length() <= 0)){
-            return [SELECT Id,Name,Number_of_Stories__c,Rooms_per_Floor__c 
+            return [SELECT Id,Name,Number_of_Stories__c,Rooms_per_Floor__c,Total_Rooms__c,Rooms_Booked__c,Rooms_Unbooked__c 
                     FROM Flat__c 
                     WHERE Building__c = :buildingId
                     ORDER BY Name
                     LIMIT 10];
        }else if(!String.isBlank(buildingId) && !String.isBlank(flatName)){
            flatName = '%'+flatName+'%';
-           return [SELECT Id,Name,Number_of_Stories__c,Rooms_per_Floor__c 
+           return [SELECT Id,Name,Number_of_Stories__c,Rooms_per_Floor__c,Total_Rooms__c,Rooms_Booked__c,Rooms_Unbooked__c 
                     FROM Flat__c 
                     WHERE Building__c = :buildingId
                     AND Name LIKE :flatName
@@ -100,18 +100,47 @@ public with sharing class BuildingHandler {
    public static List<Tenant__c> getTenants(String name){
        if (!String.isBlank(name)) {
            name = '%'+name+'%';
-           return [SELECT Id,Name 
+           return [SELECT Id,Name,Phone_Number__c,Age__c
                     FROM Tenant__c 
                     WHERE Name LIKE :name
                     ORDER BY Name
                     LIMIT 10];
        }else{
-           return [SELECT Id,Name 
+           return [SELECT Id,Name,Phone_Number__c,Age__c 
                     FROM Tenant__c
                     ORDER BY Name
                     LIMIT 10];
        }
    }
+
+   @AuraEnabled(cacheable=true)
+   public static Map<Integer,List<Integer>> getUnreservedRooms(String flatId){
+       List<Lease_Contract__c> contracts = [SELECT Id,Floor__c,Room__c FROM Lease_Contract__c WHERE Flat__c = :flatId];
+       Flat__c flat = [SELECT Id,Number_of_Stories__c,Rooms_per_Floor__c FROM Flat__c WHERE Id = :flatId];
+
+       Map<Integer,List<Integer>> availableRooms = new Map<Integer,List<Integer>>();
+       if(flat != NULL){
+            for(Integer i = 1; i <= flat.Number_of_Stories__c; i++){
+                availableRooms.put(i,new List<Integer>());
+                for(Integer j = 1; j<= Integer.valueOf(flat.Rooms_per_Floor__c); j++){
+                    availableRooms.get(i).add(j);
+                }
+            }
+        }
+
+        if((availableRooms != NULL && !availableRooms.isEmpty()) && (contracts != NULL && !contracts.isEmpty())){
+            for(Lease_Contract__c contract : contracts){
+                List<Integer> temp = availableRooms.get(Integer.valueOf(contract.Floor__c));
+                temp.remove(temp.indexOf(Integer.valueOf(contract.Room__c)));
+                availableRooms.remove(Integer.valueOf(contract.Floor__c));
+                availableRooms.put(Integer.valueOf(contract.Floor__c),temp);
+            }
+        }
+        if(availableRooms != NULL && !availableRooms.isEmpty()){
+            return availableRooms;
+        }  
+        return NULL;      
+    }
 
    @AuraEnabled
    public static String createContract(String wrapperContract){

@@ -6,16 +6,19 @@ import STATUS from '@salesforce/schema/Lease_Contract__c.Status__c'
 import getBuildings from '@salesforce/apex/BuildingHandler.getBuildings';
 import getFlatsByBuildingIdAndFlatName from '@salesforce/apex/BuildingHandler.getFlatsByBuildingIdAndFlatName';
 import getTenants from '@salesforce/apex/BuildingHandler.getTenants';
+import getUnreservedRooms from '@salesforce/apex/BuildingHandler.getUnreservedRooms'
 
 export default class CreateContract extends LightningElement {
 
     contract = {
         tenant: '',
+        tenant_name: '',
         building: '',
+        building_name: '',
         flat: '',
+        flat_name: '',
         floor: '',
         room: '',
-        description: '',
         status: '',
         startdate: '',
         enddate: ''
@@ -40,78 +43,195 @@ export default class CreateContract extends LightningElement {
 
 
     @wire(getObjectInfo, {
-        objectApiName : LEASE_CONTRACT
-    })leaseContractMetadata
+        objectApiName: LEASE_CONTRACT
+    }) leaseContractMetadata
 
     @wire(getPicklistValues, {
-        recordTypeId : '$leaseContractMetadata.data.defaultRecordTypeId',
-        fieldApiName : STATUS
-    })statusPicklist
+        recordTypeId: '$leaseContractMetadata.data.defaultRecordTypeId',
+        fieldApiName: STATUS
+    }) statusPicklist
 
-    flatList
-    tenantList
     contractDetailHandler(event) {
         let dataId = event.target.dataset.id
         let detail = event.target.value
         switch (dataId) {
             case 'building_name': this.searchBuilding(detail)
-            break;
+                break;
             case 'flat_name': this.searchFlat(detail)
-            break;
-            case 'tenant_name': this.tenantList = this.searchTenant(detail)
-            break;
+                break;
+            case 'tenant_name': this.searchTenant(detail)
+                break;
+            case 'floor': this.contract.floor = detail
+                break
+            case 'room': this.contract.room = detail
+                break
+            case 'status': this.contract.status = detail
+                break
+            case 'start_date': this.contract.startdate = detail
+                break
+            case 'end_date': this.contract.enddate = detail
+                break
         }
     }
 
     buildingList
-    searchBuilding(val){
-        getBuildings({
-            buildingName : val
-        }).then(resp => {
-            this.buildingList =  resp
-            console.log('Building List => ',this.buildingList)
-        }).catch(err => {
-            console.log('err => ',err)
-            this.buildingList =  err            
-        })
+    isBuildingListAvailable = false
+    searchBuilding(val) {
+        if (val.length > 0) {
+            getBuildings({
+                buildingName: val
+            }).then(resp => {
+                this.buildingList = resp
+                this.isBuildingListAvailable = true
+            }).catch(err => {
+                console.log('err => ', err)
+                this.buildingList = err
+            })
+        } else {
+            this.isBuildingListAvailable = false
+        }
     }
 
-    buildingName = ''
-    selectedBuildingHandler(event){
+    isBuildingSelected = false
+    selectedBuildingHandler(event) {
+        let buildingName = ''
         let buildingId = event.target.dataset.id
         this.buildingList.every(e => {
-            if(e.Id === buildingId){
-                this.buildingName = e.Name
+            if (e.Id === buildingId) {
+                buildingName = e.Name
                 return false
             }
             return true
-        })        
-        console.log('building Id => ',buildingId)
-        console.log('building name => ',this.buildingName)
-        let flatArray = this.getFlatsfromApex(buildingId)
-        console.log('flats => ',flatArray)
+        })
+        this.contract.building = buildingId
+        this.contract.building_name = buildingName
+        this.isBuildingSelected = true
     }
 
-    
-    async getFlatsfromApex(val){
-        console.log('Val =>',val)
-        let flats
-        await getFlatsByBuildingIdAndFlatName({
-            buildingId : val,
-            flatName : null
+    changeBuildingHandler() {
+        this.isBuildingSelected = false
+        this.isBuildingListAvailable = false
+        this.contract.building = ''
+        this.contract.building_name = ''
+        this.buildingList = ''
+    }
+
+    flatList
+    isFlatListAvailable = false
+    searchFlat(val) {
+        if (val.length > 0) {
+            getFlatsByBuildingIdAndFlatName({
+                buildingId: this.contract.building,
+                flatName: val
+            }).then(resp => {
+                this.flatList = resp
+                this.isFlatListAvailable = true
+            }).catch(err => {
+                console.log(err)
+            })
+        } else {
+            this.isFlatListAvailable = false
+        }
+    }
+
+    isFlatSelected = false
+    selectedFlatHandler(event) {
+        let flat
+        let flatId = event.target.dataset.id
+        this.flatList.every(e => {
+            if (flatId === e.Id) {
+                flat = e.Name
+                return false
+            }
+            return true
+        })
+        this.contract.flat = flatId
+        this.contract.flat_name = flat
+        this.isFlatSelected = true
+        console.log('flat Id => ', this.contract.flat)
+        console.log('flat name => ', this.contract.flat_name)
+    }
+
+    changeFlatHandler() {
+        this.isFlatListAvailable = false
+        this.isFlatSelected = false
+        this.contract.flat = ''
+        this.contract.flat_name = ''
+        this.flatList = ''
+    }
+
+    tenantList
+    isTenantListAvailable = false
+    searchTenant(val) {
+        if (val.length > 0) {
+            console.log('Val =>', val)
+            getTenants({
+                name: val
+            }).then(resp => {
+                this.tenantList = resp
+                console.log('Tenant list => ', this.tenantList)
+                this.isTenantListAvailable = true
+            }).catch(err => {
+                console.log(err)
+            })
+        } else {
+            this.isTenantListAvailable = false
+        }
+    }
+
+    isTenantSelected = false
+    selectedTenantHandler(event) {
+        let tenant
+        let tenantId = event.target.dataset.id
+        this.tenantList.every(e => {
+            if (tenantId === e.Id) {
+                tenant = e.Name
+                return false
+            }
+            return true
+        })
+        this.contract.tenant = tenantId
+        this.contract.tenant_name = tenant
+        this.isTenantSelected = true
+        console.log('tenant Id => ', this.contract.tenant)
+        console.log('tenant name => ', this.contract.tenant_name)
+    }
+
+    changeTenantHandler() {
+        this.isTenantListAvailable = false
+        this.isTenantSelected = false
+        this.contract.tenant = ''
+        this.contract.tenant_name = ''
+        this.tenantList = ''
+    }
+
+    //manipulate the data to show the available rooms on app
+    availableRooms = []
+    isAvailableRooms = false
+    getavailableRoomHandler(){
+        getUnreservedRooms({
+            flatId : this.contract.flat
         }).then(resp => {
-            flats = resp
-            console.log('Flats => ',flats)
-            return flats
-        }).catch(err => {  
+            if(resp != null){
+                for(let key in resp){
+                    this.availableRooms.push(
+                        {
+                            value: resp[key],
+                            key : key
+                        }
+                    )
+                }
+                // this.availableRooms.forEach(e => {
+                //     e.forEach(f => {
+                //         `${}`
+                //     })
+                // })
+                this.isAvailableRooms = true
+            }
+            console.log('Available rooms => ',this.availableRooms)
+        }).catch(err => {
             console.log(err)
         })
-        console.log('out Flats => ',flats)
-        return flats
-    }
-
-    searchTenant(val){
-
     }
 
     nextStateChangeHandler() {
