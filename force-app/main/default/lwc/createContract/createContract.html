@@ -14,13 +14,22 @@
                 <template if:true={step4detail}>
                     <p>Add other details like story, room, start date, end date etc.</p>
                     <p>
-                        <lightning-button label="Click to See Available Rooms" variant="success" onclick={getavailableRoomHandler}></lightning-button>
+                        <lightning-button label="Click to See Available Rooms" variant="success"
+                            onclick={getavailableRoomHandler}></lightning-button>
                     </p>
                     <template if:true={isAvailableRooms}>
-                        <template for:each={availableRooms} for:item="room"></template>
-                            <p key={room.id}>
-                                Floor: {room.key} -- {room.value}
-                            </p>
+                        <template for:each={availableRooms} for:item="room">
+                            <div key={room.id}>
+                                Floor: {room.key} -
+                                <div class="slds-grid slds-wrap">
+                                    <template for:each={room.value} for:item="rm">
+                                        <div key={rm.id} class="slds-col slds-size_1-of-10 slds-box">
+                                            {rm}
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
                     </template>
                 </template>
                 <template if:true={step5detail}>
@@ -48,33 +57,37 @@
                         Building Name:
                         <template if:false={isBuildingSelected}>
                             <lightning-input type="search" data-id="building_name" onchange={contractDetailHandler}
-                            required></lightning-input>
+                                required></lightning-input>
                             <template if:true={isBuildingListAvailable}>
                                 <div>
                                     <template for:each={buildingList} for:item="building">
                                         <div key={building.Id}>
-                                            <a data-id={building.Id} onclick={selectedBuildingHandler}>{building.Name}</a>
+                                            <a data-id={building.Id}
+                                                onclick={selectedBuildingHandler}>{building.Name}</a>
                                         </div>
                                     </template>
-                                </div> 
-                            </template>    
+                                </div>
+                            </template>
                         </template>
                         <template if:true={isBuildingSelected}>
-                            &nbsp;&nbsp;<a title="Click to change" onclick={changeBuildingHandler}>{contract.building_name}</a>
-                        </template>                                           
+                            &nbsp;&nbsp;<a title="Click to change"
+                                onclick={changeBuildingHandler}>{contract.building_name}</a>
+                        </template>
                     </template>
 
                     <!-- Flat Selection -->
                     <template if:true={step2}>
                         Flat Name:
                         <template if:false={isFlatSelected}>
-                            <lightning-input type="search" data-id="flat_name" onchange={contractDetailHandler} required>
+                            <lightning-input type="search" data-id="flat_name" onchange={contractDetailHandler}
+                                required>
                             </lightning-input>
                             <template if:true={isFlatListAvailable}>
                                 <div>
                                     <template for:each={flatList} for:item="flat">
                                         <div key={flat.Id}>
-                                            <a data-id={flat.Id} onclick={selectedFlatHandler}>{flat.Name} - Empty Room(s):{flat.Rooms_Unbooked__c}</a>
+                                            <a data-id={flat.Id} onclick={selectedFlatHandler}>{flat.Name} - Empty
+                                                Room(s):{flat.Rooms_Unbooked__c}</a>
                                         </div>
                                     </template>
                                 </div>
@@ -89,21 +102,24 @@
                     <template if:true={step3}>
                         Tenant Name:
                         <template if:false={isTenantSelected}>
-                            <lightning-input type="search" data-id="tenant_name" onchange={contractDetailHandler} required>
+                            <lightning-input type="search" data-id="tenant_name" onchange={contractDetailHandler}
+                                required>
                             </lightning-input>
                             <template if:true={isTenantListAvailable}>
                                 <div>
                                     <template for:each={tenantList} for:item="tenant">
                                         <div key={tenant.Id}>
-                                            <a data-id={tenant.Id} onclick={selectedTenantHandler}>{tenant.Name} - Age:{tenant.Age__c} - Phone:{tenant.Phone_Number__c}</a>
+                                            <a data-id={tenant.Id} onclick={selectedTenantHandler}>{tenant.Name} -
+                                                Age:{tenant.Age__c} - Phone:{tenant.Phone_Number__c}</a>
                                         </div>
                                     </template>
                                 </div>
                             </template>
                         </template>
                         <template if:true={isTenantSelected}>
-                            &nbsp;&nbsp;<a title="Click to change" onclick={changeTenantHandler}>{contract.tenant_name}</a>
-                        </template>                        
+                            &nbsp;&nbsp;<a title="Click to change"
+                                onclick={changeTenantHandler}>{contract.tenant_name}</a>
+                        </template>
                     </template>
 
                     <!-- Entering additional details -->
@@ -114,19 +130,19 @@
                                 <lightning-input type="text" value={contract.tenant_name} disabled></lightning-input>
                                 <lightning-input type="text" value={contract.building_name} disabled></lightning-input>
                                 <lightning-input type="text" value={contract.flat_name} disabled></lightning-input>
-                                <lightning-input type="number" data-id="floor" placeholder="Floor" onchange={contractDetailHandler}
-                                    required></lightning-input>
-                                <lightning-input type="number" data-id="room" placeholder="Room" onchange={contractDetailHandler}
-                                    required></lightning-input>
+                                <lightning-input type="number" data-id="floor" placeholder="Floor"
+                                    onchange={contractDetailHandler} required></lightning-input>
+                                <lightning-input type="number" data-id="room" placeholder="Room"
+                                    onchange={contractDetailHandler} required></lightning-input>
                             </div>
                             <div class="slds-col slds-size_1-of-2 slds-var-p-around_small">
                                 <lightning-combobox data-id="status" value={value} placeholder="Status"
                                     options={statusPicklist.data.values} onchange={contractDetailHandler}>
                                 </lightning-combobox>
-                                <lightning-input type="date" data-id="start_date" placeholder="Start Date" onchange={contractDetailHandler}
-                                    required></lightning-input>
-                                <lightning-input type="date" data-id="end_date" placeholder="End Date" onchange={contractDetailHandler}
-                                    required></lightning-input>
+                                <lightning-input type="date" data-id="start_date" placeholder="Start Date"
+                                    onchange={contractDetailHandler} required></lightning-input>
+                                <lightning-input type="date" data-id="end_date" placeholder="End Date"
+                                    onchange={contractDetailHandler} required></lightning-input>
                             </div>
                         </div>
                     </template>

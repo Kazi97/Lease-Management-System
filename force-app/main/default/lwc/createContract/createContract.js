@@ -111,9 +111,14 @@ export default class CreateContract extends LightningElement {
     changeBuildingHandler() {
         this.isBuildingSelected = false
         this.isBuildingListAvailable = false
+        this.isFlatSelected = false
+        this.isAvailableRooms = false
         this.contract.building = ''
         this.contract.building_name = ''
         this.buildingList = ''
+        this.contract.flat_name = ''
+        this.flatList = ''
+        this.availableRooms = []
     }
 
     flatList
@@ -155,9 +160,13 @@ export default class CreateContract extends LightningElement {
     changeFlatHandler() {
         this.isFlatListAvailable = false
         this.isFlatSelected = false
+        this.isAvailableRooms = false
         this.contract.flat = ''
         this.contract.flat_name = ''
         this.flatList = ''
+        this.availableRooms = []
+
+
     }
 
     tenantList
@@ -221,17 +230,42 @@ export default class CreateContract extends LightningElement {
                         }
                     )
                 }
-                // this.availableRooms.forEach(e => {
-                //     e.forEach(f => {
-                //         `${}`
-                //     })
-                // })
                 this.isAvailableRooms = true
             }
             console.log('Available rooms => ',this.availableRooms)
         }).catch(err => {
             console.log(err)
         })
+    }
+
+    submitContractRecord(){
+        console.log('Contract Records => ',this.contract)
+        this.contract = {
+            tenant: '',
+            tenant_name: '',
+            building: '',
+            building_name: '',
+            flat: '',
+            flat_name: '',
+            floor: '',
+            room: '',
+            status: '',
+            startdate: '',
+            enddate: ''
+        }
+        this.buildingList = ''
+        this.isBuildingListAvailable = false
+        this.isBuildingSelected = false
+        this.flatList = ''
+        this.isFlatListAvailable = false
+        this.isFlatSelected = false
+        this.tenantList = ''
+        this.isTenantListAvailable = false
+        this.isTenantSelected = false
+        this.availableRooms = []
+        this.isAvailableRooms = false
+        // maipulate this function to take user to the first step after submitting the record
+        // this.setSteps(1)
     }
 
     nextStateChangeHandler() {
@@ -248,6 +282,10 @@ export default class CreateContract extends LightningElement {
                 this.step++
                 this.bttnLabel = 'Next'
             }
+        }
+        else if (this.step == 5){
+            alert('Are you sure?')
+            this.submitContractRecord()
         }
 
         this.current_step = this.step.toString()
