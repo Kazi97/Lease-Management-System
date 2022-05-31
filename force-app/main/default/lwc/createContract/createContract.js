@@ -7,8 +7,11 @@ import getBuildings from '@salesforce/apex/BuildingHandler.getBuildings';
 import getFlatsByBuildingIdAndFlatName from '@salesforce/apex/BuildingHandler.getFlatsByBuildingIdAndFlatName';
 import getTenants from '@salesforce/apex/BuildingHandler.getTenants';
 import getUnreservedRooms from '@salesforce/apex/BuildingHandler.getUnreservedRooms'
+import createContract from '@salesforce/apex/BuildingHandler.createContract'
+import { ShowToastEvent } from 'lightning/platformShowToastEvent'
+import { NavigationMixin } from 'lightning/navigation'
 
-export default class CreateContract extends LightningElement {
+export default class CreateContract extends NavigationMixin(LightningElement) {
 
     contract = {
         tenant: '',
@@ -165,8 +168,6 @@ export default class CreateContract extends LightningElement {
         this.contract.flat_name = ''
         this.flatList = ''
         this.availableRooms = []
-
-
     }
 
     tenantList
@@ -214,7 +215,6 @@ export default class CreateContract extends LightningElement {
         this.tenantList = ''
     }
 
-    //manipulate the data to show the available rooms on app
     availableRooms = []
     isAvailableRooms = false
     getavailableRoomHandler(){
@@ -240,6 +240,35 @@ export default class CreateContract extends LightningElement {
 
     submitContractRecord(){
         console.log('Contract Records => ',this.contract)
+
+        createContract({
+            wrapperContract : JSON.stringify(this.contract)
+        }).then(resp => {
+            console.log('Id => ',resp)
+            
+            this.dispatchEvent(new ShowToastEvent({
+                title: 'Contract Created',
+                message: resp,
+                variant: 'success'
+            }))
+            
+            this[NavigationMixin.Navigate]({
+                type: 'standard__recordPage',
+                attributes: {
+                    recordId: resp,
+                    objectApiName: 'Lease_Contract__c',
+                    actionName: 'view'
+                },
+            })
+        }).catch(err => {
+            console.log(err)
+            this.dispatchEvent(new ShowToastEvent({
+                title: 'Contract creation failed',
+                message: 'Try Again',
+                variant: 'error'
+            }))
+        })
+
         this.contract = {
             tenant: '',
             tenant_name: '',
@@ -264,8 +293,6 @@ export default class CreateContract extends LightningElement {
         this.isTenantSelected = false
         this.availableRooms = []
         this.isAvailableRooms = false
-        // maipulate this function to take user to the first step after submitting the record
-        // this.setSteps(1)
     }
 
     nextStateChangeHandler() {

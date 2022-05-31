@@ -4,7 +4,7 @@
         <name>Manager_Approval</name>
         <label>Manager Approval</label>
         <locationX>842</locationX>
-        <locationY>695</locationY>
+        <locationY>815</locationY>
         <actionName>submit</actionName>
         <actionType>submit</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
@@ -33,6 +33,39 @@
         <label>Send Booking Confirmation</label>
         <locationX>578</locationX>
         <locationY>575</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <elementReference>emailBodyOnboarding</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>$Record.Tenant_Name__r.Email__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderAddress</name>
+            <value>
+                <elementReference>$Record.CreatedBy.Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <elementReference>emailSubject</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <actionCalls>
+        <name>Send_Booking_Confirmation_0</name>
+        <label>Send Booking Confirmation</label>
+        <locationX>1106</locationX>
+        <locationY>1055</locationY>
         <actionName>emailSimple</actionName>
         <actionType>emailSimple</actionType>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
@@ -100,12 +133,12 @@
     <actionCalls>
         <name>sendFirstEmail</name>
         <label>sendFirstEmail</label>
-        <locationX>842</locationX>
+        <locationX>974</locationX>
         <locationY>575</locationY>
         <actionName>emailSimple</actionName>
         <actionType>emailSimple</actionType>
         <connector>
-            <targetReference>Manager_Approval</targetReference>
+            <targetReference>checkOwnerIsAdmin</targetReference>
         </connector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
@@ -172,10 +205,46 @@
     <actionCalls>
         <name>sendProcessingEmail</name>
         <label>sendProcessingEmail</label>
-        <locationX>1106</locationX>
+        <locationX>1370</locationX>
         <locationY>575</locationY>
         <actionName>emailSimple</actionName>
         <actionType>emailSimple</actionType>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <elementReference>emailBodyProcessing</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>$Record.Tenant_Name__r.Email__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderAddress</name>
+            <value>
+                <elementReference>$Record.CreatedBy.Email</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <elementReference>emailSubject</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <actionCalls>
+        <name>sendProcessingEmail_0_0</name>
+        <label>sendProcessingEmail</label>
+        <locationX>1106</locationX>
+        <locationY>935</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <connector>
+            <targetReference>Send_Booking_Confirmation_0</targetReference>
+        </connector>
         <flowTransactionModel>CurrentTransaction</flowTransactionModel>
         <inputParameters>
             <name>emailBody</name>
@@ -206,7 +275,7 @@
     <decisions>
         <name>Check_Status</name>
         <label>Check Status</label>
-        <locationX>710</locationX>
+        <locationX>842</locationX>
         <locationY>455</locationY>
         <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
         <rules>
@@ -256,7 +325,7 @@
         </rules>
         <rules>
             <name>New</name>
-            <conditionLogic>and</conditionLogic>
+            <conditionLogic>or</conditionLogic>
             <conditions>
                 <leftValueReference>$Record.Status__c</leftValueReference>
                 <operator>EqualTo</operator>
@@ -283,6 +352,31 @@
                 <targetReference>sendProcessingEmail</targetReference>
             </connector>
             <label>Processing</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>checkOwnerIsAdmin</name>
+        <label>checkOwnerIsAdmin</label>
+        <locationX>974</locationX>
+        <locationY>695</locationY>
+        <defaultConnector>
+            <targetReference>updateStatusToOnboarding</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>IfNotAdmin</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.CreatedBy.Profile.Name</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>System Administrator</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Manager_Approval</targetReference>
+            </connector>
+            <label>IfNotAdmin</label>
         </rules>
     </decisions>
     <formulas>
@@ -321,7 +415,7 @@
     <recordLookups>
         <name>getFlatRecord</name>
         <label>getFlatRecord</label>
-        <locationX>710</locationX>
+        <locationX>842</locationX>
         <locationY>335</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
@@ -381,8 +475,24 @@
         </inputAssignments>
         <object>Flat__c</object>
     </recordUpdates>
+    <recordUpdates>
+        <name>updateStatusToOnboarding</name>
+        <label>updateStatusToOnboarding</label>
+        <locationX>1106</locationX>
+        <locationY>815</locationY>
+        <connector>
+            <targetReference>sendProcessingEmail_0_0</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Status__c</field>
+            <value>
+                <stringValue>OnBoarded</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
     <start>
-        <locationX>584</locationX>
+        <locationX>716</locationX>
         <locationY>0</locationY>
         <connector>
             <targetReference>getFlatRecord</targetReference>

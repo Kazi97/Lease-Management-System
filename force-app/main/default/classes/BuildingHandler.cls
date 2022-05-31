@@ -57,6 +57,30 @@ public with sharing class BuildingHandler {
        }
    }
 
+   @AuraEnabled
+   public static String createContract(String wrapperContract){
+       String contractId = '';
+       ContractWrapper wrapper = (ContractWrapper)JSON.deserialize(wrapperContract, ContractWrapper.class);
+       System.debug('Wrapper => '+wrapper);
+       if(wrapper != NULL){
+           Lease_Contract__c contract = new Lease_Contract__c();
+           contract.Tenant_Name__c = wrapper.tenant;
+           contract.Building__c = wrapper.building;
+           contract.Flat__c = wrapper.flat;
+           contract.Floor__c = Decimal.valueOf(wrapper.floor);
+           contract.Room__c = Decimal.valueOf(wrapper.room);
+           contract.Status__c = wrapper.status;
+           contract.Start_Date__c = Date.valueOf(wrapper.startdate);
+           contract.End_Date__c = Date.valueOf(wrapper.enddate);
+           insert contract;
+
+           contractId = contract.Id;
+        }
+        
+        System.debug('Contract => '+contractId);
+        return contractId;
+   }
+
    @AuraEnabled(cacheable=true)
    public static List<Building__c> getBuildings(String buildingName){
 
@@ -142,15 +166,6 @@ public with sharing class BuildingHandler {
         return NULL;      
     }
 
-   @AuraEnabled
-   public static String createContract(String wrapperContract){
-       String contractId = '';
-
-
-
-       return contractId;
-   }
-
     public class BuildingWrapper{
         @AuraEnabled
         public String name;
@@ -216,21 +231,25 @@ public with sharing class BuildingHandler {
 
     public class ContractWrapper{
         @AuraEnabled
-        public String tenant;
-        @AuraEnabled	
-        public String building;
-        @AuraEnabled	
-        public String flat;	
+        public String tenant;	
         @AuraEnabled
-        public String floor;
+        public String tenant_name;
+        @AuraEnabled	
+        public String building;	
+        @AuraEnabled
+        public String building_name;
+        @AuraEnabled
+        public String flat;
+        @AuraEnabled
+        public String flat_name;	
+        @AuraEnabled
+        public String floor;	
         @AuraEnabled
         public String room;	
         @AuraEnabled
-        public String description;
+        public String status;	
         @AuraEnabled
-        public String status;
-        @AuraEnabled
-        public String startdate;
+        public String startdate;	
         @AuraEnabled
         public String enddate;
     }
