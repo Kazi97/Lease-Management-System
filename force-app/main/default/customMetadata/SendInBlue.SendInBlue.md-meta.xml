@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>Api_Key__c</field>
-        <value xsi:type="xsd:string">get_your_api_key</value>
+        <value xsi:type="xsd:string">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</value>
     </values>
     <values>
         <field>Url__c</field>
